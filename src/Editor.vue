@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { providers } from './store'
 import { Workspace, assertExists } from '@blocksuite/store'
-import { computedAsync, until } from '@vueuse/core'
+import { until } from '@vueuse/core'
 
 const props = defineProps<{
-  workspace: Workspace
+  workspace: Workspace | null
 }>()
 
 const container = ref<HTMLDivElement>()
 
 const { EditorContainer } = await import('@blocksuite/editor')
 
-const editor = computedAsync(async () => {
+const editor = computed(() => {
+  if (!props.workspace) return
   const editor = new EditorContainer()
   const provider = providers.get(props.workspace.id)
   assertExists(provider)
-  await provider.whenSynced
   const page = props.workspace.getPage('page0')
   assertExists(page)
   editor.page = page
@@ -25,11 +25,13 @@ const editor = computedAsync(async () => {
 
 await until(editor).toBeTruthy()
 
-watch([editor, container], ([editor], _oldVal, onCleanup) => {
-  if (!editor || !container.value) return
-  container.value.append(editor)
+watchEffect((onCleanup) => {
+  if (!editor.value || !container.value) return
+  const _editor = editor.value
+  container.value.append(_editor)
+
   onCleanup(() => {
-    container.value!.removeChild(editor)
+    container.value!.removeChild(_editor)
   })
 })
 </script>

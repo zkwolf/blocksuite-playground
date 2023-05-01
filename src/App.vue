@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Editor from './Editor.vue'
-import { currentWorkspace, currentWorkspaceId } from './store'
+import { currentWorkspace } from './store'
 </script>
 
 <template>
@@ -9,6 +9,6 @@ import { currentWorkspace, currentWorkspaceId } from './store'
       <div>Loading...</div>
     </template>
 
-    <Editor v-if="currentWorkspace" :workspace="currentWorkspace" />
+    <Editor :workspace="currentWorkspace" />
   </Suspense>
 </template>

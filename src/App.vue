@@ -70,6 +70,14 @@ const currentWorkspace = computed(() => {
   )
 })
 
+watch(currentWorkspaceId, (val, oldVal) => {
+  if (val === oldVal) return
+
+  const provider = providers.get(oldVal)
+  assertExists(provider)
+  provider.disconnect()
+})
+
 const editor = computedAsync(async () => {
   const workspace = currentWorkspace.value
   if (!workspace) return null

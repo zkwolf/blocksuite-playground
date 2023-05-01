@@ -4,20 +4,18 @@ import { providers } from './store'
 import { Workspace, assertExists } from '@blocksuite/store'
 import { until } from '@vueuse/core'
 
-const props = defineProps<{
-  workspace: Workspace | null
-}>()
+const workspace = defineProp<Workspace>()
 
 const container = ref<HTMLDivElement>()
 
 const { EditorContainer } = await import('@blocksuite/editor')
 
 const editor = computed(() => {
-  if (!props.workspace) return
+  if (!workspace.value) return
   const editor = new EditorContainer()
-  const provider = providers.get(props.workspace.id)
+  const provider = providers.get(workspace.value.id)
   assertExists(provider)
-  const page = props.workspace.getPage('page0')
+  const page = workspace.value.getPage('page0')
   assertExists(page)
   editor.page = page
   return editor

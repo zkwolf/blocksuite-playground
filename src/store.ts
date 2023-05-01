@@ -83,7 +83,7 @@ watch(currentWorkspaceId, (val, oldVal) => {
 })
 
 export const currentWorkspace = computedAsync(() => {
-  if (!currentWorkspaceId.value) return null
+  if (!currentWorkspaceId.value) return undefined
   const workspace =
     workspaceMap.get(currentWorkspaceId.value) ||
     createWorkspace(currentWorkspaceId.value)

@@ -87,3 +87,12 @@ export function useEditor(workspaceOrId: MaybeRefOrGetter<Workspace | string>) {
     return editor
   })
 }
+
+export function useWorkspaceId() {
+  const route = useRoute()
+  return computed(() =>
+    route.name === 'Workspace'
+      ? (route.params.workspaceId as string)
+      : undefined
+  )
+}

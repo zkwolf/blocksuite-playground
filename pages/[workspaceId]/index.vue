@@ -3,12 +3,10 @@ definePageMeta({
   name: 'Workspace',
 })
 
-const route = useRoute()
-const workspaceId = computed(() => route.params.workspaceId as string)
-
+const workspaceId = useWorkspaceId()
 watchEffect(() => {
-  if (!workspaceIds.value.includes(workspaceId.value)) {
-    workspaceIds.value.push(workspaceId.value)
+  if (!workspaceIds.value.includes(workspaceId.value!)) {
+    workspaceIds.value.push(workspaceId.value!)
   }
 })
 </script>
@@ -22,7 +20,7 @@ watchEffect(() => {
 
       <div>
         <SelectWorkspace />
-        <Editor :workspace-id="workspaceId" />
+        <Editor :workspace-id="workspaceId!" />
       </div>
     </Suspense>
 

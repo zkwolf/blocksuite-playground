@@ -1,10 +1,6 @@
 <script setup lang="ts">
 const router = useRouter()
-const route = useRoute()
-
-const workspaceId = computed(
-  () => route.name === 'Workspace' && (route.params.workspaceId as string)
-)
+const workspaceId = useWorkspaceId()
 
 function handleChange(evt: Event) {
   const id = (evt.target as HTMLSelectElement).value

@@ -14,4 +14,9 @@ export default defineNuxtConfig({
       exclude: ['../react'],
     },
   },
+  app: {
+    head: {
+      title: 'Nuxt AFFiNE demo',
+    },
+  },
 })

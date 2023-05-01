@@ -5,6 +5,7 @@ import {
 import { Workspace } from '@blocksuite/store'
 import { AffineSchemas } from '@blocksuite/blocks/models'
 import { assertExists } from '@blocksuite/store'
+import { MaybeRefOrGetter } from '@vueuse/core'
 
 export const workspaceIds = useLocalStorage<string[]>('workspaces', [])
 watchEffect(() => {
@@ -59,4 +60,31 @@ async function switchWorkspace(key: string, workspace: Workspace) {
 export function getWorkspace(id: string) {
   const workspace = workspaceMap.get(id) || createWorkspace(id)
   return switchWorkspace(id, workspace)
+}
+
+export async function createEditor(workspace: Workspace) {
+  const { EditorContainer } = await import('@blocksuite/editor')
+  const editor = new EditorContainer()
+  const provider = providers.get(workspace.id)
+  assertExists(provider)
+  const page = workspace.getPage('page0')
+  assertExists(page)
+  editor.page = page
+  return editor
+}
+
+export const getEditor = useMemoize(createEditor, {
+  getKey(workspace) {
+    return workspace.id
+  },
+})
+
+export function useEditor(workspaceOrId: MaybeRefOrGetter<Workspace | string>) {
+  return computedAsync(async () => {
+    const resolved = resolveUnref(workspaceOrId)
+    const workspace =
+      typeof resolved === 'string' ? await getWorkspace(resolved) : resolved
+    const editor = await getEditor(workspace)
+    return editor
+  })
 }

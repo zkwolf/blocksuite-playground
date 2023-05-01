@@ -5,19 +5,7 @@ const workspaceId = defineProp<string>('workspaceId', { required: true })
 
 const container = ref<HTMLDivElement>()
 
-const editor = computedAsync(async () => {
-  const workspace = await getWorkspace(workspaceId.value)
-
-  const { EditorContainer } = await import('@blocksuite/editor')
-  const editor = new EditorContainer()
-  const provider = providers.get(workspace.id)
-  assertExists(provider)
-  const page = workspace.getPage('page0')
-  assertExists(page)
-  editor.page = page
-  return editor
-})
-
+const editor = useEditor(workspaceId)
 await until(editor).toBeTruthy()
 
 watchEffect((onCleanup) => {

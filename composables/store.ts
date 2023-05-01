@@ -5,8 +5,6 @@ import {
 import { Workspace } from '@blocksuite/store'
 import { AffineSchemas } from '@blocksuite/blocks/models'
 import { assertExists } from '@blocksuite/store'
-import { computedAsync, useLocalStorage } from '@vueuse/core'
-import { watch, watchEffect } from 'vue'
 
 export const workspaceIds = useLocalStorage<string[]>('workspaces', [])
 watchEffect(() => {
@@ -23,8 +21,7 @@ function createWorkspace(id: string) {
   workspace.register(AffineSchemas)
   workspaceMap.set(id, workspace)
 
-  const provider = createIndexedDBProvider(id, workspace.doc)
-  providers.set(id, provider)
+  providers.set(id, createIndexedDBProvider(id, workspace.doc))
 
   return workspace
 }
@@ -59,34 +56,7 @@ async function switchWorkspace(key: string, workspace: Workspace) {
   return workspace
 }
 
-export const currentWorkspaceId = useLocalStorage<string>(
-  'current-workspace',
-  'demo-workspace'
-)
-
-// fallback currentWorkspaceId to the first workspace
-watch(
-  currentWorkspaceId,
-  () => {
-    if (!currentWorkspaceId.value && workspaceIds.value.length > 0) {
-      currentWorkspaceId.value = workspaceIds.value[0]
-    }
-  },
-  { immediate: true }
-)
-
-// disconnect provider
-watch(currentWorkspaceId, (val, oldVal) => {
-  const provider = providers.get(oldVal)
-  assertExists(provider)
-  provider.disconnect()
-})
-
-export const currentWorkspace = computedAsync(() => {
-  if (!currentWorkspaceId.value) return undefined
-  const workspace =
-    workspaceMap.get(currentWorkspaceId.value) ||
-    createWorkspace(currentWorkspaceId.value)
-
-  return switchWorkspace(currentWorkspaceId.value, workspace)
-})
+export function getWorkspace(id: string) {
+  const workspace = workspaceMap.get(id) || createWorkspace(id)
+  return switchWorkspace(id, workspace)
+}

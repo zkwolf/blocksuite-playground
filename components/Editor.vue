@@ -14,7 +14,7 @@ watchEffect((onCleanup) => {
   container.value.append(_editor)
 
   onCleanup(() => {
-    container.value!.removeChild(_editor)
+    _editor.remove()
   })
 })
 

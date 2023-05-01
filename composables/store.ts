@@ -1,11 +1,10 @@
 import {
-  IndexedDBProvider,
+  type IndexedDBProvider,
   createIndexedDBProvider,
 } from '@toeverything/y-indexeddb'
-import { Workspace } from '@blocksuite/store'
+import { Workspace, assertExists } from '@blocksuite/store'
 import { AffineSchemas } from '@blocksuite/blocks/models'
-import { assertExists } from '@blocksuite/store'
-import { MaybeRefOrGetter } from '@vueuse/core'
+import { type MaybeRefOrGetter } from '@vueuse/core'
 
 export const workspaceIds = useLocalStorage<string[]>('workspaces', [])
 watchEffect(() => {

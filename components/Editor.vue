@@ -16,13 +16,6 @@ watchEffect((onCleanup) => {
     _editor.remove()
   })
 })
-
-// // disconnect provider
-// watch(workspaceId, (val, oldVal) => {
-//   const provider = providers.get(oldVal)
-//   assertExists(provider)
-//   provider.disconnect()
-// })
 </script>
 
 <template>

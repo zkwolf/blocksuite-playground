@@ -18,6 +18,12 @@ function handleAdd() {
   const id = prompt('Workspace ID')
   if (!id) return
 
+  if (workspaceIds.value.includes(id)) {
+    // eslint-disable-next-line no-alert
+    alert('Workspace ID already exists')
+    return
+  }
+
   workspaceIds.value.push(id)
 }
 </script>

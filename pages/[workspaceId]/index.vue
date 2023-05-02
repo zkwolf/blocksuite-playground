@@ -19,7 +19,6 @@ watchEffect(() => {
       </template>
 
       <div>
-        <SelectWorkspace />
         <Editor :workspace-id="workspaceId!" />
       </div>
     </Suspense>

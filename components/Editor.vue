@@ -2,6 +2,7 @@
 import { assertExists } from '@blocksuite/store'
 
 const workspaceId = defineProp<string>('workspaceId', { required: true })
+// const pageId = defineProp<string>('pageId', { required: true })
 
 const container = ref<HTMLDivElement>()
 

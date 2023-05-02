@@ -1,6 +1,8 @@
 <template>
   <ClientOnly>
-    <SelectWorkspace />
+    <main>
+      <WorkspaceList />
+    </main>
 
     <template #fallback>
       <div>Loading...</div>

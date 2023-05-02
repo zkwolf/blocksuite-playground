@@ -1,6 +1,11 @@
 export default defineNuxtConfig({
   css: ['@blocksuite/editor/themes/affine.css', '~/styles/global.css'],
-  modules: ['@vue-macros/nuxt', '@vueuse/nuxt', '@nuxt/devtools'],
+  modules: [
+    '@vue-macros/nuxt',
+    '@vueuse/nuxt',
+    '@nuxt/devtools',
+    '@unocss/nuxt',
+  ],
   vite: {
     define: {
       'process.env.FORCE_COLOR': 'undefined',

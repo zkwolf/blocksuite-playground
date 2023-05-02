@@ -17,6 +17,12 @@ function handleAdd() {
   const id = prompt('Page ID')
   if (!id) return
 
+  if (pages.value.some((p) => p.id === id)) {
+    // eslint-disable-next-line no-alert
+    alert('Page already exists')
+    return
+  }
+
   const page = workspace.value.createPage({ id })
   initPage(page)
 }

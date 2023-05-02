@@ -17,6 +17,7 @@
     "@blocksuite/store": "0.0.0-20230429153208-4ac043ec-nightly",
     "@toeverything/y-indexeddb": "0.5.4-canary.19",
     "@vueuse/nuxt": "^10.1.0",
+    "@vueuse/router": "^10.1.2",
     "lit": "^2.7.3",
     "nanoid": "^4.0.2",
     "yjs": "^13.6.0"

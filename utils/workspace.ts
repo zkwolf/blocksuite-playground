@@ -26,7 +26,7 @@ export async function switchWorkspace(key: string, workspace: Workspace) {
   await provider.whenSynced
   if (workspace.getPageNameList().length === 0) {
     const page = workspace.createPage({
-      id: 'page0',
+      id: 'index',
     })
 
     const pageBlockId = page.addBlock('affine:page', {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 const router = useRouter()
 
-function handleOpen(id: string) {
-  router.push(`/${id}/page0`)
+async function handleOpen(workspaceId: string) {
+  const pageId = (await getWorkspace(workspaceId)).meta.pageMetas[0].id
+  router.push(`/${workspaceId}/${pageId}`)
 }
 
 async function handleDelete(id: string) {
@@ -32,8 +33,8 @@ function handleAdd() {
       <span>{{ id }}</span>
       <button @click.stop="handleDelete(id)">delete</button>
     </div>
-    <div class="card">
-      <button @click="handleAdd">Add Workspace</button>
+    <div class="card !justify-center" items-center @click="handleAdd">
+      <span font-bold text-lg>Add Workspace</span>
     </div>
   </div>
 </template>

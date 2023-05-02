@@ -1,4 +1,4 @@
-import { type PageMeta, assertExists } from '@blocksuite/store'
+import { type PageMeta } from '@blocksuite/store'
 import { type MaybeRefOrGetter } from '@vueuse/core'
 
 export const workspaceIds = useLocalStorage<string[]>('workspaces', [])
@@ -20,15 +20,18 @@ export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
 
   const pages = ref<PageMeta[]>()
 
-  watchEffect((onCleanup) => {
+  function refreshPages() {
     if (!workspace.value) return
     pages.value = workspace.value.meta.pageMetas
-    const dispose = workspace.value.slots.pageAdded.on(() => {
-      assertExists(workspace.value)
-      pages.value = workspace.value.meta.pageMetas
-      onCleanup(() => {
-        dispose.dispose()
-      })
+  }
+
+  watchEffect((onCleanup) => {
+    if (!workspace.value) return
+    refreshPages()
+
+    const dispose = workspace.value.slots.pagesUpdated.on(() => {
+      refreshPages()
+      onCleanup(() => dispose.dispose())
     })
   })
 

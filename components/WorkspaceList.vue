@@ -5,7 +5,10 @@ function handleOpen(id: string) {
   router.push(`/${id}/page0`)
 }
 
-function handleDelete(id: string) {
+async function handleDelete(id: string) {
+  const workspace = await getWorkspace(id)
+  workspace.meta.pageMetas.map((page) => workspace.removePage(page.id))
+
   workspaceIds.value = workspaceIds.value.filter((i) => i !== id)
 }
 

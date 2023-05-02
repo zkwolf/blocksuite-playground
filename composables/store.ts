@@ -7,11 +7,6 @@ import { AffineSchemas } from '@blocksuite/blocks/models'
 import { type MaybeRefOrGetter } from '@vueuse/core'
 
 export const workspaceIds = useLocalStorage<string[]>('workspaces', [])
-watchEffect(() => {
-  if (workspaceIds.value === null || workspaceIds.value.length === 0) {
-    workspaceIds.value = ['demo-workspace']
-  }
-})
 
 export const workspaceMap = new Map<string, Workspace>()
 export const providers: Map<

@@ -2,7 +2,7 @@ import {
   type IndexedDBProvider,
   createIndexedDBProvider,
 } from '@toeverything/y-indexeddb'
-import { Workspace, assertExists } from '@blocksuite/store'
+import { type PageMeta, Workspace, assertExists } from '@blocksuite/store'
 import { AffineSchemas } from '@blocksuite/blocks/models'
 import { type MaybeRefOrGetter } from '@vueuse/core'
 
@@ -14,22 +14,29 @@ watchEffect(() => {
 })
 
 export const workspaceMap = new Map<string, Workspace>()
-export const providers: Map<string, IndexedDBProvider> = new Map()
+export const providers: Map<
+  string,
+  { provider: IndexedDBProvider; connected: boolean }
+> = new Map()
 
 function createWorkspace(id: string) {
   const workspace = new Workspace({ id })
   workspace.register(AffineSchemas)
   workspaceMap.set(id, workspace)
 
-  providers.set(id, createIndexedDBProvider(id, workspace.doc))
-
+  const provider = createIndexedDBProvider(id, workspace.doc)
+  provider.connect()
+  providers.set(id, { provider, connected: true })
   return workspace
 }
 
 async function switchWorkspace(key: string, workspace: Workspace) {
-  const provider = providers.get(key)
-  assertExists(provider)
-  provider.connect()
+  const providerInfo = providers.get(key)
+  assertExists(providerInfo)
+
+  const { provider, connected } = providerInfo
+
+  if (!connected) provider.connect()
 
   await provider.whenSynced
   if (workspace.isEmpty) {
@@ -48,9 +55,6 @@ async function switchWorkspace(key: string, workspace: Workspace) {
     // Add paragraph block inside frame block
     page.addBlock('affine:paragraph', {}, frameId)
     page.resetHistory()
-  } else {
-    const page = workspace.getPage('page0')
-    assertExists(page)
   }
   workspaceMap.set(key, workspace)
   return workspace
@@ -61,38 +65,72 @@ export function getWorkspace(id: string) {
   return switchWorkspace(id, workspace)
 }
 
-export async function createEditor(workspace: Workspace) {
+export async function createEditor(workspace: Workspace, pageId: string) {
   const { EditorContainer } = await import('@blocksuite/editor')
   const editor = new EditorContainer()
   const provider = providers.get(workspace.id)
   assertExists(provider)
-  const page = workspace.getPage('page0')
+  const page = workspace.getPage(pageId)
   assertExists(page)
   editor.page = page
   return editor
 }
 
 export const getEditor = useMemoize(createEditor, {
-  getKey(workspace) {
-    return workspace.id
+  getKey(workspace, pageId) {
+    return JSON.stringify({ workspaceId: workspace.id, pageId })
   },
 })
 
-export function useEditor(workspaceOrId: MaybeRefOrGetter<Workspace | string>) {
-  return computedAsync(async () => {
-    const resolved = resolveUnref(workspaceOrId)
-    const workspace =
-      typeof resolved === 'string' ? await getWorkspace(resolved) : resolved
-    const editor = await getEditor(workspace)
-    return editor
+export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
+  if (process.server) {
+    return { workspace: ref(null), pages: ref(undefined) }
+  }
+  const workspace = computedAsync(() => {
+    const id = resolveUnref(workspaceId)
+    if (!workspaceIds.value.includes(id)) {
+      throw showError({
+        statusCode: 404,
+        statusMessage: `Workspace ${id} Not Found`,
+      })
+    }
+    return getWorkspace(resolveUnref(workspaceId))
+  }, null)
+
+  const pages = ref<PageMeta[]>()
+
+  watchEffect((onCleanup) => {
+    if (!workspace.value) return
+    pages.value = workspace.value.meta.pageMetas
+    const dispose = workspace.value.slots.pageAdded.on(() => {
+      assertExists(workspace.value)
+      pages.value = workspace.value.meta.pageMetas
+      onCleanup(() => {
+        dispose.dispose()
+      })
+    })
   })
+
+  return { workspace, pages }
 }
 
-export function useWorkspaceId() {
-  const route = useRoute()
-  return computed(() =>
-    route.name === 'Workspace'
-      ? (route.params.workspaceId as string)
-      : undefined
-  )
+export function useEditor(
+  workspaceId: MaybeRefOrGetter<string>,
+  pageId: MaybeRefOrGetter<string>
+) {
+  const { workspace, pages } = useWorkspace(workspaceId)
+
+  return computedAsync(() => {
+    if (!workspace.value || !pages.value) return null
+
+    const _pageId = resolveUnref(pageId)
+    if (!pages.value.some((page) => page.id === _pageId)) {
+      throw showError({
+        statusCode: 404,
+        statusMessage: `Page ${_pageId} Not Found`,
+      })
+    }
+
+    return getEditor(workspace.value, _pageId)
+  }, null)
 }

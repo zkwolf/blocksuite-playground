@@ -2,7 +2,7 @@
 const router = useRouter()
 
 function handleOpen(id: string) {
-  router.push(`/${id}`)
+  router.push(`/${id}/page0`)
 }
 
 function handleDelete(id: string) {

@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { assertExists } from '@blocksuite/store'
-
 const workspaceId = defineProp<string>('workspaceId', { required: true })
-// const pageId = defineProp<string>('pageId', { required: true })
+const pageId = defineProp<string>('pageId', { required: true })
 
 const container = ref<HTMLDivElement>()
 
-const editor = useEditor(workspaceId)
+const editor = useEditor(workspaceId, pageId)
 await until(editor).toBeTruthy()
 
 watchEffect((onCleanup) => {
@@ -19,12 +17,12 @@ watchEffect((onCleanup) => {
   })
 })
 
-// disconnect provider
-watch(workspaceId, (val, oldVal) => {
-  const provider = providers.get(oldVal)
-  assertExists(provider)
-  provider.disconnect()
-})
+// // disconnect provider
+// watch(workspaceId, (val, oldVal) => {
+//   const provider = providers.get(oldVal)
+//   assertExists(provider)
+//   provider.disconnect()
+// })
 </script>
 
 <template>

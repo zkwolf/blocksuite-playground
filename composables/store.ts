@@ -34,7 +34,7 @@ async function switchWorkspace(key: string, workspace: Workspace) {
   if (!connected) provider.connect()
 
   await provider.whenSynced
-  if (workspace.isEmpty) {
+  if (workspace.getPageNameList().length === 0) {
     const page = workspace.createPage({
       id: 'page0',
     })

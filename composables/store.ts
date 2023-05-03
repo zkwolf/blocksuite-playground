@@ -40,7 +40,8 @@ export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
 
 export function useEditor(
   workspaceId: MaybeRefOrGetter<string>,
-  pageId: MaybeRefOrGetter<string>
+  pageId: MaybeRefOrGetter<string>,
+  mode: MaybeRefOrGetter<'page' | 'edgeless'> = 'page'
 ) {
   const { workspace, pages } = useWorkspace(workspaceId)
 
@@ -55,6 +56,6 @@ export function useEditor(
       })
     }
 
-    return getEditor(workspace.value, _pageId)
+    return getEditor(workspace.value, _pageId, resolveUnref(mode))
   }, null)
 }

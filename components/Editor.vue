@@ -1,10 +1,11 @@
 <script setup lang="ts">
 const workspaceId = defineProp<string>('workspaceId', { required: true })
 const pageId = defineProp<string>('pageId', { required: true })
+const mode = defineProp<'page' | 'edgeless'>('mode', { default: 'page' })
 
 const container = ref<HTMLDivElement>()
 
-const editor = useEditor(workspaceId, pageId)
+const editor = useEditor(workspaceId, pageId, mode)
 await until(editor).toBeTruthy()
 
 watchEffect((onCleanup) => {

@@ -22,6 +22,7 @@ const pageId = useRouteParams<string>('pageId')
           <hr />
         </div>
         <Editor :workspace-id="workspaceId" :page-id="pageId" />
+        <Editor :workspace-id="workspaceId" :page-id="pageId" mode="edgeless" />
       </div>
     </Suspense>
 

@@ -2,26 +2,37 @@ import {
   type IndexedDBProvider,
   createIndexedDBProvider,
 } from '@toeverything/y-indexeddb'
-import { Workspace, assertExists } from '@blocksuite/store'
+import { Workspace } from '@blocksuite/store'
 import { AffineSchemas } from '@blocksuite/blocks/models'
 
-export const workspaceMap = new Map<string, Workspace>()
+export const workspaces = new Map<string, Workspace>()
 export const providers: Map<string, IndexedDBProvider> = new Map()
 
-export function createWorkspace(id: string) {
-  const workspace = new Workspace({ id })
-  workspace.register(AffineSchemas)
-  workspaceMap.set(id, workspace)
+export function createProvider(
+  id: string,
+  { connect = true }: { connect?: boolean } = {}
+) {
+  const workspace = createWorkspace(id)
+  if (providers.has(id)) return providers.get(id)!
 
   const provider = createIndexedDBProvider(id, workspace.doc)
-  provider.connect()
+  if (connect) provider.connect()
   providers.set(id, provider)
+  return provider
+}
+
+export function createWorkspace(id: string) {
+  if (workspaces.has(id)) return workspaces.get(id)!
+
+  const workspace = new Workspace({ id })
+  workspace.register(AffineSchemas)
+  workspaces.set(id, workspace)
   return workspace
 }
 
-export async function switchWorkspace(key: string, workspace: Workspace) {
-  const provider = providers.get(key)
-  assertExists(provider)
+export async function initWorkspace(id: string) {
+  const workspace = createWorkspace(id)
+  const provider = createProvider(id)
 
   await provider.whenSynced
   if (workspace.getPageNameList().length === 0) {
@@ -42,9 +53,4 @@ export async function switchWorkspace(key: string, workspace: Workspace) {
     page.resetHistory()
   }
   return workspace
-}
-
-export function getWorkspace(id: string) {
-  const workspace = workspaceMap.get(id) || createWorkspace(id)
-  return switchWorkspace(id, workspace)
 }

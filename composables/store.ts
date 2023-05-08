@@ -15,7 +15,7 @@ export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
         statusMessage: `Workspace ${id} Not Found`,
       })
     }
-    return getWorkspace(resolveUnref(workspaceId))
+    return initWorkspace(resolveUnref(workspaceId))
   }, null)
 
   const pages = ref<PageMeta[]>()

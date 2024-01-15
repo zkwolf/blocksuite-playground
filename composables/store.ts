@@ -7,7 +7,7 @@ export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
   if (process.server) {
     return { workspace: ref(null), pages: ref(undefined) }
   }
-  const workspace = computedAsync(() => {
+  const workspace = computedAsync(async () => {
     const id = resolveUnref(workspaceId)
     if (!workspaceIds.value.includes(id)) {
       throw showError({
@@ -15,9 +15,8 @@ export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
         statusMessage: `Workspace ${id} Not Found`,
       })
     }
-    return initWorkspace(resolveUnref(workspaceId))
+    return await initWorkspace(resolveUnref(workspaceId))
   }, null)
-
   const pages = ref<PageMeta[]>()
 
   function refreshPages() {
@@ -40,8 +39,7 @@ export function useWorkspace(workspaceId: MaybeRefOrGetter<string>) {
 
 export function useEditor(
   workspaceId: MaybeRefOrGetter<string>,
-  pageId: MaybeRefOrGetter<string>,
-  mode: MaybeRefOrGetter<'page' | 'edgeless'> = 'page'
+  pageId: MaybeRefOrGetter<string>
 ) {
   const { workspace, pages } = useWorkspace(workspaceId)
 
@@ -56,6 +54,6 @@ export function useEditor(
       })
     }
 
-    return getEditor(workspace.value, _pageId, resolveUnref(mode))
+    return getEditor(workspace.value, _pageId)
   }, null)
 }

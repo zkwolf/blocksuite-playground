@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { assertExists } from '@blocksuite/store'
+import { assertExists } from '@blocksuite/global/utils'
 import { useRouteParams } from '@vueuse/router'
+import { nanoid } from 'nanoid'
 
 const workspaceId = defineProp<string>('workspaceId', { required: true })
 
@@ -13,16 +14,7 @@ function handleAdd() {
   assertExists(workspace.value)
   assertExists(pages.value)
 
-  // eslint-disable-next-line no-alert
-  const id = prompt('Page ID')
-  if (!id) return
-
-  if (pages.value.some((p) => p.id === id)) {
-    // eslint-disable-next-line no-alert
-    alert('Page already exists')
-    return
-  }
-
+  const id = nanoid()
   const page = workspace.value.createPage({ id })
   initPage(page)
 }

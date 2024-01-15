@@ -2,15 +2,20 @@
 const router = useRouter()
 
 async function handleOpen(workspaceId: string) {
-  const pageId = (await initWorkspace(workspaceId)).meta.pageMetas[0].id
+  const workspace = await initWorkspace(workspaceId)
+  const pageId = workspace.meta.pageMetas[0].id
+  const page = workspace.getPage(pageId)
+  await page?.load()
   router.push(`/${workspaceId}/${pageId}`)
 }
 
 async function handleDelete(id: string) {
   const provider = createProvider(id, { connect: false })
-  if (provider.connected) provider.disconnect()
   await provider.cleanup()
+
+  if (provider.connected) provider.disconnect()
   workspaceIds.value = workspaceIds.value.filter((i) => i !== id)
+  workspaces.delete(id)
 }
 
 function handleAdd() {

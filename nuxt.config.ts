@@ -1,10 +1,11 @@
 export default defineNuxtConfig({
-  css: ['@blocksuite/editor/themes/affine.css', '~/styles/global.css'],
+  css: ['@blocksuite/presets/themes/affine.css', '~/styles/global.css'],
   modules: [
     '@vue-macros/nuxt',
     '@vueuse/nuxt',
     '@nuxt/devtools',
     '@unocss/nuxt',
+    '@ant-design-vue/nuxt'
   ],
   vite: {
     define: {

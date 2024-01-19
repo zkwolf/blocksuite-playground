@@ -3,3 +3,8 @@ body {
   margin: 0;
   padding: 0;
 }
+
+:root {
+  --side-menu-border-right: 2px solid #efefef;
+  --side-menu-flex: 0 0 240px;
+}

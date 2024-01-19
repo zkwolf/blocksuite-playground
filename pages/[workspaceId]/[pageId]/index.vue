@@ -15,7 +15,7 @@ const pageId = useRouteParams<string>('pageId')
       </template>
 
       <div flex>
-        <div p2 w-240px>
+        <div p2 w-260px border-r-2 border-r-solid border-r-gray-300>
           <NuxtLink to="/">Back home</NuxtLink>
           <hr />
           <PageList :workspace-id="workspaceId" />

@@ -2,10 +2,11 @@ import {
   type IndexedDBProvider,
   createIndexedDBProvider,
 } from '@toeverything/y-indexeddb'
-import { Workspace, Schema } from '@blocksuite/store'
+import { Workspace, Schema, type WorkspaceOptions, type DocProviderCreator, type BlobStorage, createMemoryStorage } from '@blocksuite/store'
 import { AffineSchemas, __unstableSchemas } from '@blocksuite/blocks/models'
 import { nanoid } from 'nanoid'
 import { IndexedDBProviderWrapper } from './indexeddb-provider'
+import { createS3Storage } from './s3'
 
 export const workspaces = new Map<string, Workspace>()
 export const providers: Map<string, IndexedDBProvider> = new Map()
@@ -23,15 +24,33 @@ export function createProvider(
   return provider
 }
 
-export function createWorkspace(id: string) {
-  if (workspaces.has(id)) return workspaces.get(id)!
-
+function getWorkspaceOptions(id: string): WorkspaceOptions {
   const schema = new Schema()
   schema.register(AffineSchemas).register(__unstableSchemas);
 
-  const workspace = new Workspace({ id, schema, providerCreators: [
-    (_id, doc) => new IndexedDBProviderWrapper(doc)
-  ] })
+  const providerCreators: DocProviderCreator[] = []
+  providerCreators.push((_id, doc) => new IndexedDBProviderWrapper(doc))
+
+  const blobStorages: ((id: string) => BlobStorage)[] = [];
+
+  if (!import.meta.env.VITE_ENDPOINT) {
+    blobStorages.push(createMemoryStorage)
+  } else {
+    blobStorages.push(createS3Storage)
+  }
+
+  return {
+    id,
+    schema,
+    providerCreators,
+    blobStorages
+  }
+}
+
+export function createWorkspace(id: string) {
+  const options = getWorkspaceOptions(id)  
+
+  const workspace = new Workspace(options)
   workspaces.set(id, workspace)
   return workspace
 }

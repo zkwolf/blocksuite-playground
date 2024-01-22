@@ -7,7 +7,6 @@ function waitForRoot(page: Page) {
   }
   return new Promise<void>(((resolve, reject) => {
     const disposable = page.slots.rootAdded.once(() => {
-      console.log('resolve')
       resolve();
     });
     window.setTimeout(() => {
@@ -50,6 +49,7 @@ export async function createEditor(
   await page?.load()
   assertExists(page)
   await waitForRoot(page)
+  window.page = page
   editor.page = page
   return editor
 }

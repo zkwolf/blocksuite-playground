@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxt/devtools',
     '@unocss/nuxt',
-    '@ant-design-vue/nuxt'
+    '@ant-design-vue/nuxt',
   ],
   vite: {
     define: {
@@ -25,4 +25,10 @@ export default defineNuxtConfig({
       title: 'Nuxt AFFiNE demo',
     },
   },
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
 })

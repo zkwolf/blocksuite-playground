@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@ant-design-vue/nuxt": "^1.4.1",
+    "@aws-sdk/client-s3": "^3.496.0",
     "@blocksuite/blocks": "0.11.0",
     "@blocksuite/global": "0.11.0",
     "@blocksuite/presets": "0.11.0",
@@ -21,8 +22,10 @@
     "@toeverything/y-indexeddb": "0.10.0-canary.9",
     "@vueuse/nuxt": "^10.7.1",
     "@vueuse/router": "^10.7.1",
+    "ant-design-vue": "^4.1.1",
     "lit": "^3.1.1",
     "nanoid": "^5.0.4",
+    "vue": "^3.4.14",
     "yjs": "^13.6.10"
   },
   "devDependencies": {
@@ -32,6 +35,7 @@
     "@vue-macros/nuxt": "^1.9.20",
     "eslint": "^8.56.0",
     "nuxt": "3.9.1",
+    "ts-lit-plugin": "^2.0.2",
     "typescript": "^5.3.3",
     "vue-tsc": "^1.8.27"
   }

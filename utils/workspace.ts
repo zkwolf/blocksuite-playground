@@ -7,6 +7,7 @@ import { AffineSchemas, __unstableSchemas } from '@blocksuite/blocks/models'
 import { nanoid } from 'nanoid'
 import { IndexedDBProviderWrapper } from './indexeddb-provider'
 import { createS3Storage } from './s3'
+import { initPage } from './page'
 
 export const workspaces = new Map<string, Workspace>()
 export const providers: Map<string, IndexedDBProvider> = new Map()
@@ -81,18 +82,7 @@ export async function initWorkspace(id: string) {
       id,
     })
 
-    await page.load(() => {
-      const pageBlockId = page.addBlock('affine:page', {
-        title: new page.Text('Untitled'),
-      })
-
-      page.addBlock('affine:surface', {}, pageBlockId)
-
-      // Add note block inside page block
-      const noteBlockId = page.addBlock('affine:note', {}, pageBlockId)
-      // Add paragraph block inside frame block
-      page.addBlock('affine:paragraph', {}, noteBlockId)
-    })
+    await initPage(page)
     page.resetHistory()
   }
 

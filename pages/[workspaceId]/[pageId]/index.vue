@@ -17,9 +17,8 @@ const pageId = useRouteParams<string>('pageId')
       <div flex>
         <div p2 w-260px border-r-2 border-r-solid border-r-gray-300>
           <NuxtLink to="/">Back home</NuxtLink>
-          <hr />
+          <a-divider />
           <PageList :workspace-id="workspaceId" />
-          <hr />
         </div>
         <Editor :workspace-id="workspaceId" :page-id="pageId" />
         <!-- <Editor :workspace-id="workspaceId" :page-id="pageId" mode="edgeless" /> -->

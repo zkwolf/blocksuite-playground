@@ -1,9 +1,9 @@
 import { type Page } from '@blocksuite/store'
 
-export async function initPage(page: Page) {
+export async function initPage(page: Page, title?: string) {
   await page.load(() => {
     const pageBlockId = page.addBlock('affine:page', {
-      title: new page.Text('Untitled'),
+      title: new page.Text(title || 'Untitled'),
     })
 
     page.addBlock('affine:surface', {}, pageBlockId)

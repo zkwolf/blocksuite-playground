@@ -43,13 +43,12 @@ export async function createEditor(
   workspace: Workspace,
   pageId: string
 ) {
-  const { AffineDocEditor } = await import('@blocksuite/presets')
-  const editor = new AffineDocEditor()
+  const { AffineEditorContainer } = await import('@blocksuite/presets')
+  const editor = new AffineEditorContainer()
   const page = workspace.getPage(pageId)
   await page?.load()
   assertExists(page)
   await waitForRoot(page)
-  window.page = page
   editor.page = page
   return editor
 }

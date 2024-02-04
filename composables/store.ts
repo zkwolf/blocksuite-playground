@@ -43,7 +43,7 @@ export function useEditor(
 ) {
   const { workspace, pages } = useWorkspace(workspaceId)
 
-  return computedAsync(() => {
+  return computedAsync(async () => {
     if (!workspace.value || !pages.value) return null
 
     const _pageId = resolveUnref(pageId)
@@ -53,6 +53,10 @@ export function useEditor(
         statusMessage: `Page ${_pageId} Not Found`,
       })
     }
+
+    const page = workspace.value.getPage(_pageId)!
+    await page.load()
+    window.page = page 
 
     return getEditor(workspace.value, _pageId)
   }, null)

@@ -10,6 +10,7 @@ await until(editor).toBeTruthy()
 watchEffect((onCleanup) => {
   if (!editor.value || !container.value) return
   const _editor = editor.value
+  window.editor = editor.value
   container.value.append(_editor)
 
   onCleanup(() => {

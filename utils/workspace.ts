@@ -49,10 +49,16 @@ function getWorkspaceOptions(id: string): WorkspaceOptions {
 }
 
 export function createWorkspace(id: string) {
-  const options = getWorkspaceOptions(id)  
+  const savedWorkspace = workspaces.get(id)
+  if (savedWorkspace) {
+    window.workspace = savedWorkspace
+    return savedWorkspace
+  }
+  const options = getWorkspaceOptions(id)
 
   const workspace = new Workspace(options)
   workspaces.set(id, workspace)
+  window.workspace = workspace
   return workspace
 }
 

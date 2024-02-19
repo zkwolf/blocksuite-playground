@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Job } from '@blocksuite/store';
+
 const router = useRouter()
 
 async function handleOpen(workspaceId: string) {
@@ -31,6 +33,26 @@ function handleAdd() {
 
   workspaceIds.value.push(id)
 }
+
+async function handleSync() {
+  const fileHandle = await window.showDirectoryPicker()!;
+
+  for await (let [key, workspaceHandle] of fileHandle.entries()) {
+    console.log(key, workspaceHandle)
+    const workspaceId = key + '-import'
+    const workspace = createWorkspace(workspaceId)
+    const job = new Job({ workspace })
+
+    for await (let pageHandle of workspaceHandle.values()) {
+      const file = await pageHandle.getFile()
+      const text = await file.text()
+      const json = JSON.parse(text)
+      job.snapshotToPage(json);
+    }
+    workspaceIds.value.push(workspaceId)
+  }
+}
+  
 </script>
 
 <template>
@@ -46,6 +68,9 @@ function handleAdd() {
     </div>
     <div class="card !justify-center" items-center @click="handleAdd">
       <span font-bold text-lg>Add Workspace</span>
+    </div>
+    <div class="card !justify-center" items-center @click="handleSync">
+      <span font-bold text-lg>Open Local Workspace</span>
     </div>
   </div>
 </template>

@@ -1,44 +1,6 @@
 import { Page, type Workspace } from '@blocksuite/store'
 import { assertExists } from '@blocksuite/global/utils'
 
-function waitForRoot(page: Page) {
-  if (page.root) {
-    return
-  }
-  return new Promise<void>(((resolve, reject) => {
-    const disposable = page.slots.rootAdded.once(() => {
-      resolve();
-    });
-    window.setTimeout(() => {
-      disposable.dispose();
-      reject(new NoPageRootError(page));
-    }, 20 * 1000);
-  }))
-}
-
-/**
- * TODO: Define error to unexpected state together in the future.
- */
-export class NoPageRootError extends Error {
-  constructor(public page: Page) {
-    super('Page root not found when render editor!');
-
-    // Log info to let sentry collect more message
-    const hasExpectSpace = Array.from(page.rootDoc.spaces.values()).some(
-      doc => page.spaceDoc.guid === doc.guid
-    );
-
-    console.info(
-      'NoPageRootError current data: %s',
-      JSON.stringify({
-        expectPageId: page.id,
-        expectGuid: page.spaceDoc.guid,
-        hasExpectSpace,
-      })
-    );
-  }
-}
-
 export async function createEditor(
   workspace: Workspace,
   pageId: string
@@ -48,7 +10,9 @@ export async function createEditor(
   const page = workspace.getPage(pageId)
   await page?.load()
   assertExists(page)
-  await waitForRoot(page)
+  if (!page.root) {
+    await new Promise(resolve => page.slots.rootAdded.once(resolve))
+  }
   editor.page = page
   return editor
 }

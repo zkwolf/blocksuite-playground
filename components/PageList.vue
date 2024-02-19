@@ -5,6 +5,7 @@ import { useRouteParams } from '@vueuse/router'
 import { nanoid } from 'nanoid'
 import dayjs from 'dayjs'
 import { Text } from '@blocksuite/store'
+import { Job } from '@blocksuite/store';
 
 const router = useRouter()
 
@@ -90,6 +91,38 @@ async function handleChat() {
     })
 }
 
+async function syncData() {
+  const fileHandle = await window.showDirectoryPicker({
+    mode: 'readwrite'
+  })!;
+
+  if (!fileHandle) {
+    console.log('not handle')
+    return
+  }
+  console.info('sync workspace')
+  const workspaceId = workspace.value!.id
+  const handle = await fileHandle.getDirectoryHandle(workspaceId, { create: true });
+  const job = new Job({ workspace: workspace.value! });
+
+  for (let i of workspace.value!.pages.keys()) {
+    console.info('sync page: ' + i)
+    const fileHandle = await handle.getFileHandle(i, { create: true })
+    const writableStream = await fileHandle.createWritable();
+
+    const page = workspace.value!.pages.get(i)!
+    await page.load()
+    if (!page.root) {
+      await new Promise(resolve => page.slots.rootAdded.once(resolve))
+    }
+    const snapshot = await job.pageToSnapshot(page)
+
+    await writableStream.write(JSON.stringify(snapshot));
+
+    await writableStream.close();
+  }
+}
+
 async function handleGenerate() {
   const text = chatText.value
   if (!text) {
@@ -161,7 +194,7 @@ async function handleGenerate() {
 
     <a-button p1 @click="handleAdd">Add page</a-button>
     <a-button @click="handleAddNewDaily">New Daily</a-button>
-    <a-button @click="exportPage">Export page</a-button>
+    <a-button @click="syncData">Sync Data</a-button>
     <a-textarea style="height: 300px" v-model:value="chatText"></a-textarea>
     <a-button @click="handleChat">Chat</a-button>
     <a-button @click="handleGenerate">Generate</a-button>

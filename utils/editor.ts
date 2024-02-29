@@ -1,19 +1,28 @@
 import { Page, type Workspace } from '@blocksuite/store'
 import { assertExists } from '@blocksuite/global/utils'
+import { AffineEditorContainer } from '@blocksuite/presets'
 
 export async function createEditor(
   workspace: Workspace,
   pageId: string
 ) {
-  const { AffineEditorContainer } = await import('@blocksuite/presets')
   const editor = new AffineEditorContainer()
   const page = workspace.getPage(pageId)
-  await page?.load()
   assertExists(page)
+
+  page?.load()
   if (!page.root) {
     await new Promise(resolve => page.slots.rootAdded.once(resolve))
   }
   editor.page = page
+  editor.slots.pageLinkClicked.on(({ pageId }) => {
+    const target = workspace.getPage(pageId);
+    if (!target) {
+      throw new Error(`Failed to jump to doc ${pageId}`);
+    }
+    target.load();
+    editor.page = target;
+  })
   return editor
 }
 

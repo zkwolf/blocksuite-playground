@@ -11,13 +11,12 @@ async function handleOpen(workspaceId: string) {
   router.push(`/${workspaceId}/${pageId}`)
 }
 
-async function handleDelete(id: string) {
-  const provider = createProvider(id, { connect: false })
-  await provider.cleanup()
+async function handleDelete(workspaceId: string) {
+  const workspace = await initWorkspace(workspaceId)
+  workspace.forceStop()
 
-  if (provider.connected) provider.disconnect()
-  workspaceIds.value = workspaceIds.value.filter((i) => i !== id)
-  workspaces.delete(id)
+  workspaceIds.value = workspaceIds.value.filter((i) => i !== workspaceId)
+  workspaces.delete(workspaceId)
 }
 
 function handleAdd() {

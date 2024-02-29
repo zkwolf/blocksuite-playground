@@ -55,7 +55,7 @@ export function useEditor(
     }
 
     const page = workspace.value.getPage(_pageId)!
-    await page.load()
+    page.load()
     window.page = page 
 
     return getEditor(workspace.value, _pageId)

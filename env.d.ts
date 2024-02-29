@@ -3,7 +3,6 @@ import type { EditorHost } from '@blocksuite/lit';
 import type { AffineEditorContainer } from '@blocksuite/presets';
 import type {
   BlockSchema,
-  DocProvider,
   Page,
   Workspace,
 } from '@blocksuite/store';

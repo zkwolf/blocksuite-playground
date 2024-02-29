@@ -26,9 +26,6 @@ dependencies:
   '@blocksuite/sync':
     specifier: ^0.12.0
     version: 0.12.0(yjs@13.6.12)
-  '@toeverything/y-indexeddb':
-    specifier: 0.10.0-canary.9
-    version: 0.10.0-canary.9(yjs@13.6.12)
   '@vueuse/nuxt':
     specifier: ^10.7.1
     version: 10.7.2(nuxt@3.10.2)(vue@3.4.19)
@@ -3074,17 +3071,6 @@ packages:
 
   /@toeverything/theme@0.7.29:
     resolution: {integrity: sha512-tZrdrYm6v7tPWWOZG3PO3gJW+vardeeSk8ijhYnh2RB+AFd/yaqGkdCNc8nJj+OdGligFXDeBY/6YIY/k0aNWg==}
-    dev: false
-
-  /@toeverything/y-indexeddb@0.10.0-canary.9(yjs@13.6.12):
-    resolution: {integrity: sha512-3hzktNuOaXut/RgRjKNeqQura1zeYF+tSLSlWDc0rDBOrEpwD/1EOpKVCbgtl8ke7f4oinLfgBNk4HcwqaQUYQ==}
-    peerDependencies:
-      yjs: ^13
-    dependencies:
-      idb: 7.1.1
-      nanoid: 5.0.5
-      y-provider: 0.10.0-canary.9(yjs@13.6.12)
-      yjs: 13.6.12
     dev: false
 
   /@tokenizer/token@0.3.0:
@@ -6822,10 +6808,6 @@ packages:
 
   /idb-keyval@6.2.1:
     resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
-    dev: false
-
-  /idb@7.1.1:
-    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
     dev: false
 
   /idb@8.0.0:
@@ -11169,14 +11151,6 @@ packages:
       yjs: ^13.0.0
     dependencies:
       lib0: 0.2.89
-      yjs: 13.6.12
-    dev: false
-
-  /y-provider@0.10.0-canary.9(yjs@13.6.12):
-    resolution: {integrity: sha512-ImkLqCpxHK0lkxD12s7BE4p14NiAnQQSJGN5GONl4W4CyLBx6+tRop3yg66abg64N3JYX9EwXxnIVDziq6b8Dw==}
-    peerDependencies:
-      yjs: ^13
-    dependencies:
       yjs: 13.6.12
     dev: false
 

@@ -6,6 +6,8 @@ import { IndexedDBDocSource } from '@blocksuite/sync';
 
 export const workspaces = new Map<string, Workspace>()
 
+const DB_NAME = "PLAYGROUND_DB"
+
 function getWorkspaceOptions(id: string): WorkspaceOptions {
   const schema = new Schema()
   schema.register(AffineSchemas).register(__unstableSchemas);
@@ -13,7 +15,7 @@ function getWorkspaceOptions(id: string): WorkspaceOptions {
   const idGenerator: Generator = Generator.NanoID;
 
   let docSources: StoreOptions['docSources'] = {
-    main: new IndexedDBDocSource(),
+    main: new IndexedDBDocSource(DB_NAME),
   };
   let awarenessSources: StoreOptions['awarenessSources'];
 
